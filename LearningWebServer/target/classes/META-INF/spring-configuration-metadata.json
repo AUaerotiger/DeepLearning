@@ -1,0 +1,75 @@
+{
+  "groups": [
+    {
+      "name": "ajp",
+      "type": "com.gdms.config.AjpConfigProperties",
+      "sourceType": "com.gdms.config.AjpConfigProperties"
+    },
+    {
+      "name": "learning",
+      "type": "com.gdms.config.LearningConfigProperties",
+      "sourceType": "com.gdms.config.LearningConfigProperties"
+    },
+    {
+      "name": "messaging",
+      "type": "com.gdms.config.MessagingConfigProperties",
+      "sourceType": "com.gdms.config.MessagingConfigProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "ajp.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables AJP for Apache port forwarding",
+      "sourceType": "com.gdms.config.AjpConfigProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "ajp.port",
+      "type": "java.lang.Integer",
+      "description": "This is the port to connection with Apache HTTP",
+      "sourceType": "com.gdms.config.AjpConfigProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "learning.epochs",
+      "type": "java.lang.Integer",
+      "description": "The number of epoch revolutions to try in Deep Learning Fit",
+      "sourceType": "com.gdms.config.LearningConfigProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "learning.pics-per-row",
+      "type": "java.lang.Integer",
+      "description": "The number of pictures to write per row",
+      "sourceType": "com.gdms.config.LearningConfigProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "learning.response-timeout",
+      "type": "java.lang.Integer",
+      "description": "The number of seconds before timing out for a response",
+      "sourceType": "com.gdms.config.LearningConfigProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "learning.testing-file",
+      "type": "java.lang.String",
+      "description": "File name to save testing images",
+      "sourceType": "com.gdms.config.LearningConfigProperties"
+    },
+    {
+      "name": "learning.training-file",
+      "type": "java.lang.String",
+      "description": "File name to save training images",
+      "sourceType": "com.gdms.config.LearningConfigProperties"
+    },
+    {
+      "name": "messaging.local-url",
+      "type": "java.lang.String",
+      "description": "The URL used for local connections. All listeners connect to this URL. Senders will connect to this URL if local-host = true",
+      "sourceType": "com.gdms.config.MessagingConfigProperties"
+    }
+  ],
+  "hints": []
+}

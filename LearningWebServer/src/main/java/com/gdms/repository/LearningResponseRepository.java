@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.gdms.model.LearningResponse;
+import com.gdms.messaging.model.LearningResponse;
 
 @Component
 public class LearningResponseRepository {

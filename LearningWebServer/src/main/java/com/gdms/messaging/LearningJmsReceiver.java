@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import com.gdms.model.LearningResponse;
+import com.gdms.messaging.model.LearningResponse;
 import com.gdms.repository.LearningResponseRepository;
 
 /**

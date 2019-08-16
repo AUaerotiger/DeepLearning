@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-import com.gdms.model.EvaluationRequest;
-import com.gdms.model.LearningMessageTypes;
-import com.gdms.model.LearningRequest;
-import com.gdms.model.TrainingRequest;
+import com.gdms.messaging.model.EvaluationRequest;
+import com.gdms.messaging.model.LearningMessageTypes;
+import com.gdms.messaging.model.LearningRequest;
+import com.gdms.messaging.model.TrainingRequest;
 
 /**
  * Class to send JMS messages to AMQ broker

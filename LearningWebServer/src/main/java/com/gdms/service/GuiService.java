@@ -1,16 +1,17 @@
 package com.gdms.service;
 
-import com.gdms.model.EvaluationResponse;
-import com.gdms.model.LoadResponse;
+import com.gdms.controller.model.EvaluationReponseGui;
+import com.gdms.controller.model.EvaluationRequestGui;
+import com.gdms.controller.model.LoadResponseGui;
+import com.gdms.controller.model.TrainingRequestGui;
+import com.gdms.controller.model.TrainingResponseGui;
 
 public interface GuiService {
 	
-	public LoadResponse loadData();
+	public LoadResponseGui loadData();
 	
-	public boolean trainData();
+	public TrainingResponseGui trainData(TrainingRequestGui request);
 	
-	public boolean terminate();
-	
-	public EvaluationResponse evaluateImages();
+	public EvaluationReponseGui evaluateImages(EvaluationRequestGui request);
 
 }

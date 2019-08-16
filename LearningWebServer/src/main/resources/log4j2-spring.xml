@@ -2,7 +2,7 @@
 <!DOCTYPE xml>
 <Configuration monitorInterval="60">
 	<Properties>
-		<Property name="log-path">/var/log</Property>
+		<Property name="log-path">/home/learner</Property>
 	</Properties>
 	<Appenders>
 		<Console name="Console-Appender" target="SYSTEM_OUT">

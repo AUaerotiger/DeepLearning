@@ -24,7 +24,7 @@ class LearningListener(object):
           
         mappedObject = json.loads(msg)
         
-        responseHeader = {"myLocalFactory": 'com.gdms.model.LearningResponse'}
+        responseHeader = {"myLocalFactory": 'com.gdms.messaging.model.LearningResponse'}
         
         messageType = None
         if 'type' not in mappedObject:
@@ -57,7 +57,7 @@ class LearningListener(object):
             returnObject.update( {'testImagesSize' : testImagesSize} )
             returnObject.update( {'classNames' : classNames} )
             
-            responseHeader.update( {"myLocalFactory": 'com.gdms.model.LoadResponse'} )
+            responseHeader.update( {"myLocalFactory": 'com.gdms.messaging.model.LoadResponse'} )
             
         elif messageType == "TRAIN_DATA":
             
@@ -102,7 +102,7 @@ class LearningListener(object):
             returnObject.update( {'loss' : str(test_loss)} )
             returnObject.update( {'accuracy' : str(test_acc)} )
             
-            responseHeader.update( {"myLocalFactory": 'com.gdms.model.EvaluationResponse'} )
+            responseHeader.update( {"myLocalFactory": 'com.gdms.messaging.model.EvaluationResponse'} )
             
         else:
             print('Unrecognized message type: ', messageType)

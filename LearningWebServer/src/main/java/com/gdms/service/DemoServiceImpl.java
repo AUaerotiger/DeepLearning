@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.gdms.messaging.LearningJmsSender;
-import com.gdms.model.EvaluationResponse;
-import com.gdms.model.LearningMessageTypes;
-import com.gdms.model.LearningResponse;
-import com.gdms.model.LoadResponse;
+import com.gdms.messaging.model.EvaluationResponse;
+import com.gdms.messaging.model.LearningMessageTypes;
+import com.gdms.messaging.model.LearningResponse;
+import com.gdms.messaging.model.LoadResponse;
 import com.gdms.repository.LearningResponseRepository;
 import com.gdms.util.ByteUtil;
 import com.gdms.util.ImageUtil;
+import com.gdms.util.ServiceUtil;
 
 @Service("demoService")
 public class DemoServiceImpl implements DemoService {
@@ -26,11 +27,14 @@ public class DemoServiceImpl implements DemoService {
 	@Value("${learning.epochs}")
     private int EPOCHS;
 	
-	@Value("${learning.training-file}")
-    private String TRAINING_FILE;
+	@Value("${learning.image-path}")
+    private String IMAGE_PATH;
 	
 	@Value("${learning.testing-file}")
     private String TEST_FILE;
+	
+	@Value("${learning.training-file}")
+    private String TRAINING_FILE;
 	
 	@Value("${learning.pics-per-row}")
     private int PICS_PER_ROW;
@@ -40,6 +44,9 @@ public class DemoServiceImpl implements DemoService {
 	
 	@Autowired
 	private LearningResponseRepository responseRepository;
+	
+	@Autowired
+	private ServiceUtil serviceUtil;
 
 	@Override
 	public boolean runDemo() {
@@ -49,7 +56,7 @@ public class DemoServiceImpl implements DemoService {
 		LOG.info("Sending Request to load data");
 		this.sender.sendLoadRequest();
 		
-		LoadResponse loadResponse = (LoadResponse) this.getResponse(LearningMessageTypes.LOAD_DATA);
+		LoadResponse loadResponse = (LoadResponse) this.serviceUtil.getResponse(LearningMessageTypes.LOAD_DATA);
 		
 		if (loadResponse == null) {
 			return false;
@@ -72,13 +79,14 @@ public class DemoServiceImpl implements DemoService {
 		int[][][] trainingImages = ByteUtil.convertImageBytes(trainingImageBytes, trainingSize, trainingSize);
 		int[][][] testingImages = ByteUtil.convertImageBytes(testImageBytes, testSize, testSize);
 		
-		LOG.info("Writing training pictures to file: " + TRAINING_FILE);
-		ImageUtil.writeImage(trainingImages, TRAINING_FILE, PICS_PER_ROW);		
+		String trainingFile = IMAGE_PATH + TRAINING_FILE;
+		LOG.info("Writing training pictures to file: " + trainingFile);
+		ImageUtil.writeImage(trainingImages, trainingFile, PICS_PER_ROW);		
 		
 		LOG.info("Sending request to train data");
 		this.sender.sendTrainRequest(EPOCHS);
 		
-		LearningResponse trainingResponse = this.getResponse(LearningMessageTypes.TRAIN_DATA);
+		LearningResponse trainingResponse = this.serviceUtil.getResponse(LearningMessageTypes.TRAIN_DATA);
 		
 		if (trainingResponse == null) {
 			return false;
@@ -90,7 +98,7 @@ public class DemoServiceImpl implements DemoService {
 		this.sender.sendEvaluationRequest(loadResponse.getTestingImages(), testingImages.length, 
 				loadResponse.getTestImagesSize());
 		
-		EvaluationResponse evaluationResponse = (EvaluationResponse) this.getResponse(LearningMessageTypes.EVALUATE_IMAGES);
+		EvaluationResponse evaluationResponse = (EvaluationResponse) this.serviceUtil.getResponse(LearningMessageTypes.EVALUATE_IMAGES);
 		
 		if (evaluationResponse == null) {
 			return false;
@@ -104,14 +112,14 @@ public class DemoServiceImpl implements DemoService {
 		String resultsFile = evaluationResponse.getLocation();
 		byte[] resultBytes = ByteUtil.readBytes(resultsFile);
 		double[][] results = ByteUtil.convertResultBytes(resultBytes, classNames.length);
-		int[] resultLabels = this.getResultLabels(results);
+		int[] resultLabels = this.serviceUtil.getResultLabels(results);
 		
 		int badResults = 0;
 		for (int i=0; i<resultLabels.length; i++) {
 			if (testingLabelsNumbers[i] != resultLabels[i]) {
 				badResults++;
-				String badLabel = this.getLabel(resultLabels, i, classNames);
-				String goodLabel = this.getLabel(testingLabelsNumbers, i, classNames);
+				String badLabel = this.serviceUtil.getLabel(resultLabels, i, classNames);
+				String goodLabel = this.serviceUtil.getLabel(testingLabelsNumbers, i, classNames);
 				LOG.error("Bad prediction at index: " + i + ", Prediction: " + badLabel + ", Actual: " + goodLabel);
 			}
 		}
@@ -123,66 +131,11 @@ public class DemoServiceImpl implements DemoService {
 		LOG.info("Predicted Accuracy / Loss: " + accuracy + " / " + loss);
 		LOG.info("Actual Accuracy: " + actualAccuracy);
 		
-		LOG.info("Writing testing pictures to file: " + TEST_FILE);
-		ImageUtil.writeImage(testingImages, TEST_FILE, PICS_PER_ROW, testingLabelsNumbers, resultLabels, classNames);
+		String testFile = IMAGE_PATH + TEST_FILE;
+		LOG.info("Writing testing pictures to file: " + testFile);
+		ImageUtil.writeImage(testingImages, testFile, PICS_PER_ROW, testingLabelsNumbers, resultLabels, classNames);
 		
 		return true;
-		
-	}
-	
-	private LearningResponse getResponse(LearningMessageTypes type) {
-		
-		LearningResponse response = null;
-		int count = 0;
-		while (count<TIMEOUT && response == null) {
-			LOG.info("Waiting for Response from Deep Learning Software: " + count);
-			
-			response = this.responseRepository.getResponse(type.toString());
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {}
-			
-			count++;
-		}
-		
-		if (response == null) {
-			LOG.error("Timeout waiting for response for: " + type);
-		}
-		
-		return response;		
-		
-	}
-	
-	private String getLabel(int[] labels, int index, String[] classNames) {
-		
-		return classNames[labels[index]];
-		
-	}
-	
-	private int[] getResultLabels(double[][] results) {
-		
-		int[] resultLabels = new int[results.length];
-		for (int i=0; i<results.length; i++) {
-			resultLabels[i] = this.getMaxIndex(results[i]);
-		}
-		
-		return resultLabels;
-		
-	}
-	
-	private int getMaxIndex(double[] array) {
-		
-		Double maxValue = Double.MAX_VALUE*-1;
-		int saveIndex = -1;
-		for (int i=0; i<array.length; i++) {
-			if (array[i]>maxValue) {
-				maxValue = array[i];
-				saveIndex = i;
-			}
-		}
-		
-		return saveIndex;
 		
 	}
 

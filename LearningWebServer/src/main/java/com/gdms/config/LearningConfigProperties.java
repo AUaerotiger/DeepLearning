@@ -20,6 +20,16 @@ public class LearningConfigProperties {
      * The number of epoch revolutions to try in Deep Learning Fit
      */
     private int epochs;
+    
+    /**
+     * File path to save all images
+     */
+    private String imagePath;
+    
+    /**
+     * URL for GUI to access images
+     */
+    private String imageUrl;
 
     /**
      * File name to save training images
@@ -30,6 +40,11 @@ public class LearningConfigProperties {
      * File name to save testing images
      */
     private String testingFile;
+    
+    /**
+     * File name to save results images
+     */
+    private String resultsFile;
 
     /**
      * The number of pictures to write per row
@@ -74,6 +89,30 @@ public class LearningConfigProperties {
 
 	public void setPicsPerRow(int picsPerRow) {
 		this.picsPerRow = picsPerRow;
+	}
+
+	public String getResultsFile() {
+		return resultsFile;
+	}
+
+	public void setResultsFile(String resultsFile) {
+		this.resultsFile = resultsFile;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
     
 }

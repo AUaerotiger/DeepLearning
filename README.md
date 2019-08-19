@@ -45,4 +45,16 @@ In the future I would optimize the app by allowing users to select different lea
 and also of course make the actual data selectable so we aren't running of of canned data provided from the software.
 I would also like to implement new algorithms such as the GANS deep learning algorithm.
 
+Here are some resources I used to construct the app:
+
+https://www.tensorflow.org/tutorials/keras/basic_classification (provided the basic idea of the project as well as keras / tensorflow
+usage)
+
+https://www.dyclassroom.com/image-processing-project/how-to-create-a-random-pixel-image-in-java (copied some code from 
+here in order to generate png files from python byte files)
+
+https://simplesassim.wordpress.com/2014/03/14/how-to-send-a-message-to-an-apache-activemq-queue-with-python/
+https://simplesassim.wordpress.com/2014/03/14/how-to-receive-a-message-from-an-apache-activemq-queue-with-python/
+I used these links to figure out the python / ActiveMQ / STOMP interface
+
 I have lots to learn with deep learning, but I had a great time with this!
